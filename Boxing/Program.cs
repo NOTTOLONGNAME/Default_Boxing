@@ -158,56 +158,58 @@ namespace Boxing
         {
             string path = Directory.GetCurrentDirectory();
             path = path.Remove(path.Length - 10, 10);
-            path = Path.Combine(path, "Data\\0\\100_cl.json");
-            var json = File.ReadAllText(path);
-
-            var data = Newtonsoft.Json.JsonConvert.DeserializeObject <Models.Input_JSON>(json);
-           
-            Models.Cargo_Groups[] Cargo_Groups = data.Cargo_groups;
-            Models.Cargo_Space Cargo_Space = data.Cargo_space;
-            
-            Array.Sort(Cargo_Groups, new Cargo_Groups_Comparer());
-
-            Console.WriteLine("Cargo_Space:\n");
-            Cargo_Space.Write_ALL();
-            Console.WriteLine("Cargo_Groups\n");
-
-            List <Package> Package = new List<Package> (130);
-
-
-            for (int i = 0,j = 0;i < Cargo_Groups.Length; i++)
+            path = Path.Combine(path, "Data");
+            foreach (string file in Directory.EnumerateFiles(path, "*.json"))
             {
-                for (int n = 0; n < Cargo_Groups[i].Count; n++)        
+                var json = File.ReadAllText(file);
+                var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Input_JSON>(json);
+                Models.Cargo_Groups[] Cargo_Groups = data.Cargo_groups;
+                Models.Cargo_Space Cargo_Space = data.Cargo_space;
+
+                Array.Sort(Cargo_Groups, new Cargo_Groups_Comparer());
+
+                Console.WriteLine("Cargo_Space:\n");
+                Cargo_Space.Write_ALL();
+                Console.WriteLine("Cargo_Groups\n");
+
+                List<Package> Package = new List<Package>(130);
+
+
+                for (int i = 0, j = 0; i < Cargo_Groups.Length; i++)
                 {
-                    if (j >= Package.Count)
-                        Package.Add(new Package(Cargo_Groups[i]));
-                    Package[j] = new Package(Cargo_Groups[i]);
-                    j++;
+                    for (int n = 0; n < Cargo_Groups[i].Count; n++)
+                    {
+                        if (j >= Package.Count)
+                            Package.Add(new Package(Cargo_Groups[i]));
+                        Package[j] = new Package(Cargo_Groups[i]);
+                        j++;
+                    }
                 }
+                FillingSpace Hangar = new FillingSpace(Cargo_Space.Size);
+                List<Package> fin = new List<Package>();
+                Hangar.Hangar.fillbox(Package, fin);
+
+                for (int i = 0; i < fin.Count; i++)
+                {
+
+                    fin[i].Write_ALL();
+                    Console.WriteLine(fin[i].Position[0]);
+                    Console.WriteLine(fin[i].Position[1]);
+                    Console.WriteLine(fin[i].Position[2]);
+
+
+                }
+                Console.WriteLine("-----------------------------------");/*
+                for (int i = 0; i < Package.Count; i++)
+                {
+
+                    Package[i].Write_ALL();
+                    Console.WriteLine(Package[i].Position[0]);
+                    Console.WriteLine(Package[i].Position[1]);
+                    Console.WriteLine(Package[i].Position[2]);
+                
+                }*/
             }
-            FillingSpace Hangar = new FillingSpace (Cargo_Space.Size);
-            List<Package> fin = new List<Package>();
-            Hangar.Hangar.fillbox(Package, fin);
-            for(int i = 0; i < fin.Count; i++)
-            {
-
-                fin[i].Write_ALL();
-                Console.WriteLine(fin[i].Position[0]);
-                Console.WriteLine(fin[i].Position[1]);
-                Console.WriteLine(fin[i].Position[2]);
-
-
-            } 
-            Console.WriteLine("-----------------------------------");
-            for (int i = 0; i < Package.Count; i++)
-            {
-
-                Package[i].Write_ALL();
-                Console.WriteLine(Package[i].Position[0]);
-                Console.WriteLine(Package[i].Position[1]);
-                Console.WriteLine(Package[i].Position[2]);
-            }
-
         }
     }
 }
