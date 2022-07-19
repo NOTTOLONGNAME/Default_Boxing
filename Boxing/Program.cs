@@ -165,9 +165,10 @@ namespace Boxing
             string path = Directory.GetCurrentDirectory();
             path = path.Remove(path.Length - 10, 10);
             path = Path.Combine(path, "Data");
+            int order = 1;
             foreach (string file in Directory.EnumerateFiles(path, "*.json"))
             {
-                int order = 1;
+               
                 var json = File.ReadAllText(file);
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Input_JSON>(json);
                 Models.Cargo_Groups[] Cargo_Groups = data.Cargo_groups;
@@ -201,17 +202,35 @@ namespace Boxing
                 PathOut = Path.Combine(PathOut, fileName);
                 using (FileStream fs = File.Create(PathOut)) 
                 order = order + 1;
-               
-                for (int i = 0; i < fin.Count; i++)
-                {   
-                    fin[i].Write_ALL();
+                using (StreamWriter writer = new StreamWriter(PathOut))
+                {
+                    writer.WriteLine($"{{\n \"cargoSpace\":{{\n \"loading_size\":{{\n\"height\": {Cargo_Space.Size[2]},\n\"length\": {Cargo_Space.Size[0]}, \n\"width\": {Cargo_Space.Size[1]}\n }}, \n \"position\":[\n" +
+                        $" {0},\n {0},\n {0}\n],\n\"type\": \"pallet\"\n}},\n\"cargos\":[");
+                    for (int i = 0; i < fin.Count - 1; i++)
+                    {
+                        writer.WriteLine($"{{\n \"calculated_size\":{{\n   \"height\": {fin[i].Size[2]},\n    \"length\": {fin[i].Size[0]}, \n        \"width\": {fin[i].Size[1]}\n }},\n \"cargo_id\": \"{fin[i].Group_id}\",\n" +
+                            $"\"id\": {i},\n \"mass\": {fin[i].Mass},\n\"position\": {{\n \"x\": {fin[i].Position[0]},\n \"y\": {fin[i].Position[2]},\n \"z\": {fin[i].Position[1]}\n}},\n\"size\":" +
+                            $"{{\n\"height\": {fin[i].Size[2]},\n\"length\": {fin[i].Size[0]}, \n\"width\": {fin[i].Size[1]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true,\n\"type\": \"box\"\n }},\n ");
+                    }
+                    writer.WriteLine($"{{\n \"calculated_size\":{{\n   \"height\": {fin[fin.Count - 1].Size[2]},\n    \"length\": {fin[fin.Count - 1].Size[0]}, \n        \"width\": {fin[fin.Count - 1].Size[1]}\n }},\n \"cargo_id\": \"{fin[fin.Count - 1].Group_id}\",\n" +
+                            $"\"id\": {fin.Count - 1},\n \"mass\": {fin[fin.Count - 1].Mass},\n\"position\": {{\n \"x\": {fin[fin.Count - 1].Position[0]},\n \"y\": {fin[fin.Count - 1].Position[2]},\n \"z\": {fin[fin.Count - 1].Position[1]}\n}},\n\"size\":" +
+                            $"{{\n\"height\": {fin[fin.Count - 1].Size[2]},\n\"length\": {fin[fin.Count - 1].Size[0]}, \n\"width\": {fin[fin.Count - 1].Size[1]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true,\n\"type\": \"box\"\n }}\n ],\n\"unpacked\":[ ");
+                    for (int i = 0; i < Package.Count - 1; i++)
+                    {
+                        writer.WriteLine($"{{\n\"group_id\": \"{Package[i].Group_id}\",\n" +
+                            $"\"id\": {fin.Count + i - 1},\n \"mass\": {Package[i].Mass},\n\"position\": {{\n \"x\": {Package[i].Position[0]},\n \"y\": {Package[i].Position[2]},\n \"z\": {Package[i].Position[1]}\n}},\n\"size\":" +
+                            $"{{\n\"height\": {Package[i].Size[2]},\n\"length\": {Package[i].Size[0]}, \n\"width\": {Package[i].Size[1]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true \n}},");
+                    }
+                    writer.WriteLine($"{{\n\"group_id\": \"{Package[Package.Count - 1].Group_id}\",\n" +
+                            $"\"id\": {fin.Count + Package.Count - 1},\n \"mass\": {Package[Package.Count - 1].Mass},\n\"position\": {{\n \"x\": {Package[Package.Count - 1].Position[0]},\n \"y\": {Package[Package.Count - 1].Position[2]},\n \"z\": {Package[Package.Count - 1].Position[1]}\n}},\n\"size\":" +
+                            $"{{\n\"height\": {Package[Package.Count - 1].Size[2]},\n\"length\": {Package[Package.Count - 1].Size[0]}, \n\"width\": {Package[Package.Count - 1].Size[2]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true \n}}\n]\n}}");
                 }
                 Console.WriteLine("-----------------------Не поместившиеся ящики-------------------------");
                 for (int i = 0; i < Package.Count; i++)
                 {
-                    Package[i].Size[0] = 33333;
-                    Package[i].Size[1] = 33333;
-                    Package[i].Size[2] = 33333;
+                    Package[i].Position[0] = 33333;
+                    Package[i].Position[1] = 33333;
+                    Package[i].Position[2] = 33333;
 
                     Package[i].Write_ALL();
                 }
