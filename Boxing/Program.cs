@@ -27,10 +27,16 @@ namespace Boxing
         public Package(Models.Cargo_Groups Object) { Id = Object.Id; Size = Object.Size; Mass = Object.Mass; Group_id = Object.Group_id; Count = Object.Count; }
         //                       L W H       
         public int[] Position = {0,0,0};
+        public void Write_ALL()
+        {
+            Console.WriteLine($"ID:{Id}\n MASS: {Mass}\n Size: {Size[0]}, {Size[2]}, {Size[1]}\n" + // Оси изменены в соответствии с позиционированием ( Y = Z, Z = Y)
+                $"Sort: {Sort}\n Count: {Count}\n Group_id: {Group_id}\n Position:\n" +
+                $"    x: {Position[0] + Size[0]/2}\n    y: {Position[2] + Size[2]/2}\n    z: {Position[1] + Size[1]/2}");
+        }
     }
 
 
-    public class FillingSpace : Models.Cargo_Space { 
+    public class FillingSpace : Models.Cargo_Groups { 
         public FillingSpace() { }
         public FillingSpace(int [] n) {Hangar = new Space(n); }
         
@@ -191,24 +197,14 @@ namespace Boxing
 
                 for (int i = 0; i < fin.Count; i++)
                 {
-
                     fin[i].Write_ALL();
-                    Console.WriteLine(fin[i].Position[0]);
-                    Console.WriteLine(fin[i].Position[1]);
-                    Console.WriteLine(fin[i].Position[2]);
-
-
                 }
-                Console.WriteLine("-----------------------------------");/*
+                Console.WriteLine("-----------------------Не поместившиеся ящики-------------------------");
                 for (int i = 0; i < Package.Count; i++)
                 {
-
                     Package[i].Write_ALL();
-                    Console.WriteLine(Package[i].Position[0]);
-                    Console.WriteLine(Package[i].Position[1]);
-                    Console.WriteLine(Package[i].Position[2]);
-                
-                }*/
+                }
+                Console.WriteLine("-----------------------Новый файл-------------------------");
             }
         }
     }
