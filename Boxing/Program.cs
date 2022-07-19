@@ -164,7 +164,7 @@ namespace Boxing
         {
             string path = Directory.GetCurrentDirectory();
             path = path.Remove(path.Length - 10, 10);
-            path = Path.Combine(path, "Data");
+            path = Path.Combine(path, "Default");
             int order = 1;
             foreach (string file in Directory.EnumerateFiles(path, "*.json"))
             {
