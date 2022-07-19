@@ -167,6 +167,7 @@ namespace Boxing
             path = Path.Combine(path, "Data");
             foreach (string file in Directory.EnumerateFiles(path, "*.json"))
             {
+                int order = 1;
                 var json = File.ReadAllText(file);
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Input_JSON>(json);
                 Models.Cargo_Groups[] Cargo_Groups = data.Cargo_groups;
@@ -195,13 +196,23 @@ namespace Boxing
                 List<Package> fin = new List<Package>();
                 Hangar.Hangar.fillbox(Package, fin);
 
+                string PathOut = Path.Combine(path, "Output");
+                string fileName = "Output" + order + ".json";
+                PathOut = Path.Combine(PathOut, fileName);
+                using (FileStream fs = File.Create(PathOut)) 
+                order = order + 1;
+               
                 for (int i = 0; i < fin.Count; i++)
-                {
+                {   
                     fin[i].Write_ALL();
                 }
                 Console.WriteLine("-----------------------Не поместившиеся ящики-------------------------");
                 for (int i = 0; i < Package.Count; i++)
                 {
+                    Package[i].Size[0] = 33333;
+                    Package[i].Size[1] = 33333;
+                    Package[i].Size[2] = 33333;
+
                     Package[i].Write_ALL();
                 }
                 Console.WriteLine("-----------------------Новый файл-------------------------");
