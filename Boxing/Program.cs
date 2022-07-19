@@ -29,9 +29,9 @@ namespace Boxing
         public int[] Position = {0,0,0};
         public void Write_ALL()
         {
-            Console.WriteLine($"ID:{Id}\n MASS: {Mass}\n Size: {Size[0]}, {Size[2]}, {Size[1]}\n" + // Оси изменены в соответствии с позиционированием ( Y = Z, Z = Y)
-                $"Sort: {Sort}\n Count: {Count}\n Group_id: {Group_id}\n Position:\n" +
-                $"    x: {Position[0] + Size[0]/2}\n    y: {Position[2] + Size[2]/2}\n    z: {Position[1] + Size[1]/2}");
+            Console.WriteLine($"ID:{Id}  MASS: {Mass}  Size: {Size[0]}, {Size[2]}, {Size[1]} " + // Оси изменены в соответствии с позиционированием ( Y = Z, Z = Y)
+                $"Sort: {Sort}  Count: {Count}  Group_id: {Group_id}  Position: " +
+                $"    x: {Position[0] + Size[0]/2}     y: {Position[2] + Size[2]/2}     z: {Position[1] + Size[1]/2}");
         }
     }
 
@@ -163,8 +163,9 @@ namespace Boxing
         static void Main(string[] args)
         {
             string path = Directory.GetCurrentDirectory();
+            
             path = path.Remove(path.Length - 10, 10);
-            path = Path.Combine(path, "Default");
+            path = Path.Combine(path, "var\\hackathon\\group1");
             int order = 1;
             foreach (string file in Directory.EnumerateFiles(path, "*.json"))
             {
@@ -176,9 +177,9 @@ namespace Boxing
 
                 Array.Sort(Cargo_Groups, new Cargo_Groups_Comparer());
 
-                Console.WriteLine("Cargo_Space:\n");
+                Console.WriteLine("Cargo_Space: ");
                 Cargo_Space.Write_ALL();
-                Console.WriteLine("Cargo_Groups\n");
+                Console.WriteLine("Cargo_Groups ");
 
                 List<Package> Package = new List<Package>(130);
 
@@ -196,34 +197,41 @@ namespace Boxing
                 FillingSpace Hangar = new FillingSpace(Cargo_Space.Size);
                 List<Package> fin = new List<Package>();
                 Hangar.Hangar.fillbox(Package, fin);
-
-                string PathOut = Path.Combine(path, "Output");
+                
+                string PathOut = Directory.GetCurrentDirectory();
+                PathOut = PathOut.Remove(PathOut.Length - 10, 10);
+                
+                PathOut = Path.Combine(PathOut, "Default\\Output");
                 string fileName = "Output" + order + ".json";
                 PathOut = Path.Combine(PathOut, fileName);
                 using (FileStream fs = File.Create(PathOut)) 
                 order = order + 1;
                 using (StreamWriter writer = new StreamWriter(PathOut))
                 {
-                    writer.WriteLine($"{{\n \"cargoSpace\":{{\n \"loading_size\":{{\n\"height\": {Cargo_Space.Size[2]},\n\"length\": {Cargo_Space.Size[0]}, \n\"width\": {Cargo_Space.Size[1]}\n }}, \n \"position\":[\n" +
-                        $" {0},\n {0},\n {0}\n],\n\"type\": \"pallet\"\n}},\n\"cargos\":[");
+                    writer.WriteLine($"{{  \"cargoSpace\":{{  \"loading_size\":{{ \"height\": {Cargo_Space.Size[2]}, \"length\": {Cargo_Space.Size[0]},  \"width\": {Cargo_Space.Size[1]}  }},   \"position\":[ " +
+                        $" {0},  {0},  {0} ], \"type\": \"pallet\" }}, \"cargos\":[");
                     for (int i = 0; i < fin.Count - 1; i++)
                     {
-                        writer.WriteLine($"{{\n \"calculated_size\":{{\n   \"height\": {fin[i].Size[2]},\n    \"length\": {fin[i].Size[0]}, \n        \"width\": {fin[i].Size[1]}\n }},\n \"cargo_id\": \"{fin[i].Group_id}\",\n" +
-                            $"\"id\": {i},\n \"mass\": {fin[i].Mass},\n\"position\": {{\n \"x\": {fin[i].Position[0]},\n \"y\": {fin[i].Position[2]},\n \"z\": {fin[i].Position[1]}\n}},\n\"size\":" +
-                            $"{{\n\"height\": {fin[i].Size[2]},\n\"length\": {fin[i].Size[0]}, \n\"width\": {fin[i].Size[1]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true,\n\"type\": \"box\"\n }},\n ");
+                        writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[i].Size[2]},     \"length\": {fin[i].Size[0]},          \"width\": {fin[i].Size[1]}  }},  \"cargo_id\": \"{fin[i].Group_id}\", " +
+                            $"\"id\": {i},  \"mass\": {fin[i].Mass}, \"position\": {{  \"x\": {fin[i].Position[0]},  \"y\": {fin[i].Position[2]},  \"z\": {fin[i].Position[1]} }}, \"size\":" +
+                            $"{{ \"height\": {fin[i].Size[2]}, \"length\": {fin[i].Size[0]},  \"width\": {fin[i].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }},  ");
                     }
-                    writer.WriteLine($"{{\n \"calculated_size\":{{\n   \"height\": {fin[fin.Count - 1].Size[2]},\n    \"length\": {fin[fin.Count - 1].Size[0]}, \n        \"width\": {fin[fin.Count - 1].Size[1]}\n }},\n \"cargo_id\": \"{fin[fin.Count - 1].Group_id}\",\n" +
-                            $"\"id\": {fin.Count - 1},\n \"mass\": {fin[fin.Count - 1].Mass},\n\"position\": {{\n \"x\": {fin[fin.Count - 1].Position[0]},\n \"y\": {fin[fin.Count - 1].Position[2]},\n \"z\": {fin[fin.Count - 1].Position[1]}\n}},\n\"size\":" +
-                            $"{{\n\"height\": {fin[fin.Count - 1].Size[2]},\n\"length\": {fin[fin.Count - 1].Size[0]}, \n\"width\": {fin[fin.Count - 1].Size[1]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true,\n\"type\": \"box\"\n }}\n ],\n\"unpacked\":[ ");
+                    writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[fin.Count - 1].Size[2]},     \"length\": {fin[fin.Count - 1].Size[0]},          \"width\": {fin[fin.Count - 1].Size[1]}  }},  \"cargo_id\": \"{fin[fin.Count - 1].Group_id}\", " +
+                            $"\"id\": {fin.Count - 1},  \"mass\": {fin[fin.Count - 1].Mass}, \"position\": {{  \"x\": {fin[fin.Count - 1].Position[0]},  \"y\": {fin[fin.Count - 1].Position[2]},  \"z\": {fin[fin.Count - 1].Position[1]} }}, \"size\":" +
+                            $"{{ \"height\": {fin[fin.Count - 1].Size[2]}, \"length\": {fin[fin.Count - 1].Size[0]},  \"width\": {fin[fin.Count - 1].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }}  ], \"unpacked\":[ ");
                     for (int i = 0; i < Package.Count - 1; i++)
                     {
-                        writer.WriteLine($"{{\n\"group_id\": \"{Package[i].Group_id}\",\n" +
-                            $"\"id\": {fin.Count + i - 1},\n \"mass\": {Package[i].Mass},\n\"position\": {{\n \"x\": {Package[i].Position[0]},\n \"y\": {Package[i].Position[2]},\n \"z\": {Package[i].Position[1]}\n}},\n\"size\":" +
-                            $"{{\n\"height\": {Package[i].Size[2]},\n\"length\": {Package[i].Size[0]}, \n\"width\": {Package[i].Size[1]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true \n}},");
+                        writer.WriteLine($"{{ \"group_id\": \"{Package[i].Group_id}\", " +
+                            $"\"id\": {fin.Count + i - 1},  \"mass\": {Package[i].Mass}, \"position\": {{  \"x\": {Package[i].Position[0]},  \"y\": {Package[i].Position[2]},  \"z\": {Package[i].Position[1]} }}, \"size\":" +
+                            $"{{ \"height\": {Package[i].Size[2]}, \"length\": {Package[i].Size[0]},  \"width\": {Package[i].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }},");
                     }
-                    writer.WriteLine($"{{\n\"group_id\": \"{Package[Package.Count - 1].Group_id}\",\n" +
-                            $"\"id\": {fin.Count + Package.Count - 1},\n \"mass\": {Package[Package.Count - 1].Mass},\n\"position\": {{\n \"x\": {Package[Package.Count - 1].Position[0]},\n \"y\": {Package[Package.Count - 1].Position[2]},\n \"z\": {Package[Package.Count - 1].Position[1]}\n}},\n\"size\":" +
-                            $"{{\n\"height\": {Package[Package.Count - 1].Size[2]},\n\"length\": {Package[Package.Count - 1].Size[0]}, \n\"width\": {Package[Package.Count - 1].Size[2]}\n }},\n\"sort\": {1},\n\"stacking\": true,\n\"turnover\": true \n}}\n]\n}}");
+                    writer.WriteLine($"{{ \"group_id\": \"{Package[Package.Count - 1].Group_id}\", " +
+                            $"\"id\": {fin.Count + Package.Count - 1},  \"mass\": {Package[Package.Count - 1].Mass}, \"position\": {{  \"x\": {Package[Package.Count - 1].Position[0]},  \"y\": {Package[Package.Count - 1].Position[2]},  \"z\": {Package[Package.Count - 1].Position[1]} }}, \"size\":" +
+                            $"{{ \"height\": {Package[Package.Count - 1].Size[2]}, \"length\": {Package[Package.Count - 1].Size[0]},  \"width\": {Package[Package.Count - 1].Size[2]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }} ] }}");
+                }
+                for (int i = 0; i < fin.Count; i++)
+                {
+                    fin[i].Write_ALL();
                 }
                 Console.WriteLine("-----------------------Не поместившиеся ящики-------------------------");
                 for (int i = 0; i < Package.Count; i++)
