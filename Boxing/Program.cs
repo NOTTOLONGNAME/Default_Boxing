@@ -206,21 +206,21 @@ namespace Boxing
                         $" {0},  {0},  {0} ], \"type\": \"pallet\" }}, \"cargos\":[");
                     for (int i = 0; i < fin.Count - 1; i++)
                     {
-                        writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[i].Size[2]},     \"length\": {fin[i].Size[0]},          \"width\": {fin[i].Size[1]}  }},  \"cargo_id\": \"{fin[i].Group_id}\", " +
-                            $"\"id\": {i},  \"mass\": {fin[i].Mass}, \"position\": {{  \"x\": {fin[i].Position[0]},  \"y\": {fin[i].Position[2]},  \"z\": {fin[i].Position[1]} }}, \"size\":" +
+                        writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[i].Size[2]},     \"length\": {fin[i].Size[0]},          \"width\": {fin[i].Size[1]}  }},  \"cargo_id\": \"{fin[i].Group_id + order}\", " +
+                            $"\"id\": {i},  \"mass\": {fin[i].Mass}, \"position\": {{  \"x\": {fin[i].Position[0] + fin[i].Size[0]/2},  \"y\": {fin[i].Position[2] + fin[i].Size[2]/2},  \"z\": {fin[i].Position[1] + fin[i].Size[1]/2} }}, \"size\":" +
                             $"{{ \"height\": {fin[i].Size[2]}, \"length\": {fin[i].Size[0]},  \"width\": {fin[i].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }},  ");
                     }
-                    writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[fin.Count - 1].Size[2]},     \"length\": {fin[fin.Count - 1].Size[0]},          \"width\": {fin[fin.Count - 1].Size[1]}  }},  \"cargo_id\": \"{fin[fin.Count - 1].Group_id}\", " +
-                            $"\"id\": {fin.Count - 1},  \"mass\": {fin[fin.Count - 1].Mass}, \"position\": {{  \"x\": {fin[fin.Count - 1].Position[0]},  \"y\": {fin[fin.Count - 1].Position[2]},  \"z\": {fin[fin.Count - 1].Position[1]} }}, \"size\":" +
+                    writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[fin.Count - 1].Size[2]},     \"length\": {fin[fin.Count - 1].Size[0]},          \"width\": {fin[fin.Count - 1].Size[1]}  }},  \"cargo_id\": \"{fin[fin.Count - 1].Group_id + fin.Count}\", " +
+                            $"\"id\": {fin.Count - 1},  \"mass\": {fin[fin.Count - 1].Mass}, \"position\": {{  \"x\": {fin[fin.Count - 1].Position[0] + fin[fin.Count - 1].Size[0]/2},  \"y\": {fin[fin.Count - 1].Position[2] + fin[fin.Count - 1].Size[2]/2},  \"z\": {fin[fin.Count - 1].Position[1] + fin[fin.Count - 1].Size[1]/2} }}, \"size\":" +
                             $"{{ \"height\": {fin[fin.Count - 1].Size[2]}, \"length\": {fin[fin.Count - 1].Size[0]},  \"width\": {fin[fin.Count - 1].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }}  ], \"unpacked\":[ ");
                     for (int i = 0; i < Package.Count - 1; i++)
                     {
                         writer.WriteLine($"{{ \"group_id\": \"{Package[i].Group_id}\", " +
-                            $"\"id\": {fin.Count + i - 1},  \"mass\": {Package[i].Mass}, \"position\": {{  \"x\": {Package[i].Position[0]},  \"y\": {Package[i].Position[2]},  \"z\": {Package[i].Position[1]} }}, \"size\":" +
+                            $"\"id\": {fin.Count + i - 1},  \"mass\": {Package[i].Mass}, \"position\": {{  \"x\": {Package[i].Position[0] + Package[i].Size[0]/2},  \"y\": {Package[i].Position[2] + Package[i].Size[2]/2},  \"z\": {Package[i].Position[1] + Package[i].Size[1] / 2} }}, \"size\":" +
                             $"{{ \"height\": {Package[i].Size[2]}, \"length\": {Package[i].Size[0]},  \"width\": {Package[i].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }},");
                     }
                     writer.WriteLine($"{{ \"group_id\": \"{Package[Package.Count - 1].Group_id}\", " +
-                            $"\"id\": {fin.Count + Package.Count - 1},  \"mass\": {Package[Package.Count - 1].Mass}, \"position\": {{  \"x\": {Package[Package.Count - 1].Position[0]},  \"y\": {Package[Package.Count - 1].Position[2]},  \"z\": {Package[Package.Count - 1].Position[1]} }}, \"size\":" +
+                            $"\"id\": {fin.Count + Package.Count - 1},  \"mass\": {Package[Package.Count - 1].Mass}, \"position\": {{  \"x\": {Package[Package.Count - 1].Position[0] + Package[Package.Count - 1].Size[0]/2},  \"y\": {Package[Package.Count - 1].Position[2] + Package[Package.Count - 1].Size[2]/2},  \"z\": {Package[Package.Count - 1].Position[1] + Package[Package.Count - 1].Size[1]/2} }}, \"size\":" +
                             $"{{ \"height\": {Package[Package.Count - 1].Size[2]}, \"length\": {Package[Package.Count - 1].Size[0]},  \"width\": {Package[Package.Count - 1].Size[2]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }} ] }}");
                 }
                 for (int i = 0; i < fin.Count; i++)
