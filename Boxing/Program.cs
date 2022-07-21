@@ -162,10 +162,7 @@ namespace Boxing
         }
         static void Main(string[] args)
         {
-            string path = Directory.GetCurrentDirectory();
-            
-            path = path.Remove(path.Length - 10, 10);
-            path = Path.Combine(path, "var\\hackathon\\data1");
+            string path = "C:\\group1\\Default_Boxing\\Boxing\\var\\hackathon\\data1";
             int order = 1;
             foreach (string file in Directory.EnumerateFiles(path, "*.json"))
             {
@@ -198,10 +195,7 @@ namespace Boxing
                 List<Package> fin = new List<Package>();
                 Hangar.Hangar.fillbox(Package, fin);
                 
-                string PathOut = Directory.GetCurrentDirectory();
-                PathOut = PathOut.Remove(PathOut.Length - 31, 31);
-                
-                PathOut = Path.Combine(PathOut, "output");
+                string PathOut = "C:\\group1\\output";
                 string fileName = "Output" + order + ".json";
                 PathOut = Path.Combine(PathOut, fileName);
                 using (FileStream fs = File.Create(PathOut)) 
