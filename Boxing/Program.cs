@@ -199,9 +199,9 @@ namespace Boxing
                 Hangar.Hangar.fillbox(Package, fin);
                 
                 string PathOut = Directory.GetCurrentDirectory();
-                PathOut = PathOut.Remove(PathOut.Length - 10, 10);
+                PathOut = PathOut.Remove(PathOut.Length - 16, 16);
                 
-                PathOut = Path.Combine(PathOut, "Default\\Output");
+                PathOut = Path.Combine(PathOut, "group1\\Output");
                 string fileName = "Output" + order + ".json";
                 PathOut = Path.Combine(PathOut, fileName);
                 using (FileStream fs = File.Create(PathOut)) 
