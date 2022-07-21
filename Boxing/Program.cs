@@ -33,6 +33,17 @@ namespace Boxing
                 $"Sort: {Sort}  Count: {Count}  Group_id: {Group_id}  Position: " +
                 $"    x: {Position[0] + Size[0]/2}     y: {Position[2] + Size[2]/2}     z: {Position[1] + Size[1]/2}");
         }
+        public string normalise(int a)
+        {
+            if(a%2000 >= 1000)
+            {
+                return $"{a/2000}.{(a%2000) /2}";
+            }
+            else
+            {
+                return $"{a/2000}.{(a%1000)/2}";
+            }
+        }
     }
 
 
@@ -81,12 +92,12 @@ namespace Boxing
                     this.Ontop.pos[2] += sub.Size[2];  
 
                     this.Onright.Size[0] = sub.Size[0]; // у области справа длина устанавливаемой коробки и ширина остаточной области
-                    this.Onright.Size[1] = Size[1] - (pos[1] + sub.Size[1]);
+                    this.Onright.Size[1] = Size[1] - (/*pos[1] + */sub.Size[1]);
                     this.Onright.Size[2] = Size[2] - pos[2];// и оставшаяся высота до потолка
                     this.Onright.pos = (int[])pos.Clone();
                     this.Onright.pos[1] += sub.Size[1];
 
-                    this.Down.Size[0] = Size[0] - (sub.Size[0] + pos[0]); // у области справа длина устанавливаемой коробки и ширина остаточной области
+                    this.Down.Size[0] = Size[0] - (sub.Size[0] /*+ pos[0]*/); // у области справа длина устанавливаемой коробки и ширина остаточной области
                     this.Down.Size[1] = sub.Size[1]; // - (pos[1] + sub.Size[1]);
                     this.Down.Size[2] = Size[2] - pos[2];// и оставшаяся высота до потолка
                     this.Down.pos = (int[])pos.Clone();
@@ -156,6 +167,27 @@ namespace Boxing
     }
     class Program
     {
+        public static string normalise(int a)
+        {
+            if (a % 2000 >= 1000)
+            {
+                if (a % 2000 >= 200)
+                    return $"{a / 2000}.{(a % 2000) / 2}";
+                else if (a % 1000 <= 20)
+                    return $"{a / 2000}.00{(a % 1000) / 2}";
+                else
+                    return $"{a / 2000}.0{(a % 2000) / 2}";
+            }
+            else
+            {
+                if ((a % 1000) >= 200)
+                    return $"{a / 2000}.{(a % 1000) / 2}";
+                else if (a % 1000 <= 20)
+                    return $"{a / 2000}.00{(a % 1000) / 2}"; 
+                else
+                    return $"{a / 2000}.0{(a % 1000) / 2}";
+            }
+        }
         void Output()
         {
 
@@ -202,26 +234,26 @@ namespace Boxing
                 order = order + 1;
                 using (StreamWriter writer = new StreamWriter(PathOut))
                 {
-                    writer.WriteLine($"{{  \"cargoSpace\":{{  \"loading_size\":{{ \"height\": {Cargo_Space.Size[2]}, \"length\": {Cargo_Space.Size[0]},  \"width\": {Cargo_Space.Size[1]}  }},   \"position\":[ " +
-                        $" {0},  {0},  {0} ], \"type\": \"pallet\" }}, \"cargos\":[");
+                    writer.WriteLine($"{{  \"cargoSpace\":{{  \"loading_size\":{{ \"height\": {normalise(2*Cargo_Space.Size[2])}, \"length\": {normalise(2 * Cargo_Space.Size[0])},  \"width\": {normalise(2 * Cargo_Space.Size[1])}  }},   \"position\":[ " +
+                        $" {normalise(Cargo_Space.Size[0])},  {normalise(Cargo_Space.Size[2])},  {normalise(Cargo_Space.Size[1])} ], \"type\": \"pallet\" }}, \"cargos\":[");
                     for (int i = 0; i < fin.Count - 1; i++)
                     {
-                        writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[i].Size[2]},     \"length\": {fin[i].Size[0]},          \"width\": {fin[i].Size[1]}  }},  \"cargo_id\": \"{fin[i].Group_id + order}\", " +
-                            $"\"id\": {i},  \"mass\": {fin[i].Mass}, \"position\": {{  \"x\": {fin[i].Position[0] + fin[i].Size[0]/2},  \"y\": {fin[i].Position[2] + fin[i].Size[2]/2},  \"z\": {fin[i].Position[1] + fin[i].Size[1]/2} }}, \"size\":" +
-                            $"{{ \"height\": {fin[i].Size[2]}, \"length\": {fin[i].Size[0]},  \"width\": {fin[i].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }},  ");
+                        writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {normalise(2 * fin[i].Size[2])},     \"length\": {normalise(2 * fin[i].Size[0])},          \"width\": {normalise(2 * fin[i].Size[1])}  }},  \"cargo_id\": \"{fin[i].Group_id}\", " +
+                            $"\"id\": {i},  \"mass\": {fin[i].Mass}, \"position\": {{  \"x\": {normalise(2*fin[i].Position[0] + fin[i].Size[0])},  \"y\": {normalise(2*fin[i].Position[2] + fin[i].Size[2])},  \"z\": {normalise(2*fin[i].Position[1] + fin[i].Size[1])} }}, \"size\":" +
+                            $"{{ \"height\": {normalise(2 * fin[i].Size[2])}, \"length\": {normalise(2 * fin[i].Size[0])},  \"width\": {normalise(2 * fin[i].Size[1])}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }},  ");
                     }
-                    writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {fin[fin.Count - 1].Size[2]},     \"length\": {fin[fin.Count - 1].Size[0]},          \"width\": {fin[fin.Count - 1].Size[1]}  }},  \"cargo_id\": \"{fin[fin.Count - 1].Group_id + fin.Count}\", " +
-                            $"\"id\": {fin.Count - 1},  \"mass\": {fin[fin.Count - 1].Mass}, \"position\": {{  \"x\": {fin[fin.Count - 1].Position[0] + fin[fin.Count - 1].Size[0]/2},  \"y\": {fin[fin.Count - 1].Position[2] + fin[fin.Count - 1].Size[2]/2},  \"z\": {fin[fin.Count - 1].Position[1] + fin[fin.Count - 1].Size[1]/2} }}, \"size\":" +
-                            $"{{ \"height\": {fin[fin.Count - 1].Size[2]}, \"length\": {fin[fin.Count - 1].Size[0]},  \"width\": {fin[fin.Count - 1].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }}  ], \"unpacked\":[ ");
+                    writer.WriteLine($"{{  \"calculated_size\":{{    \"height\": {normalise(2 * fin[fin.Count - 1].Size[2])},     \"length\": {normalise(2 * fin[fin.Count - 1].Size[0])},          \"width\": {normalise(2 * fin[fin.Count - 1].Size[1])}  }},  \"cargo_id\": \"{fin[fin.Count - 1].Group_id}\", " +
+                            $"\"id\": {fin.Count - 1},  \"mass\": {fin[fin.Count - 1].Mass}, \"position\": {{  \"x\": {normalise(2*fin[fin.Count - 1].Position[0] + fin[fin.Count - 1].Size[0])},  \"y\": {normalise(2*fin[fin.Count - 1].Position[2] + fin[fin.Count - 1].Size[2])},  \"z\": {normalise(2*fin[fin.Count - 1].Position[1] + fin[fin.Count - 1].Size[1])} }}, \"size\":" +
+                            $"{{ \"height\": {normalise(2 * fin[fin.Count - 1].Size[2])}, \"length\": {normalise(2 * fin[fin.Count - 1].Size[0])},  \"width\": {normalise(2 * fin[fin.Count - 1].Size[1])}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true, \"type\": \"box\"  }}  ], \"unpacked\":[ ");
                     for (int i = 0; i < Package.Count - 1; i++)
                     {
                         writer.WriteLine($"{{ \"group_id\": \"{Package[i].Group_id}\", " +
-                            $"\"id\": {fin.Count + i - 1},  \"mass\": {Package[i].Mass}, \"position\": {{  \"x\": {Package[i].Position[0] + Package[i].Size[0]/2},  \"y\": {Package[i].Position[2] + Package[i].Size[2]/2},  \"z\": {Package[i].Position[1] + Package[i].Size[1] / 2} }}, \"size\":" +
-                            $"{{ \"height\": {Package[i].Size[2]}, \"length\": {Package[i].Size[0]},  \"width\": {Package[i].Size[1]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }},");
+                            $"\"id\": {fin.Count + i - 1},  \"mass\": {Package[i].Mass}, \"position\": {{  \"x\": {555},  \"y\": {555},  \"z\": {555} }}, \"size\":" +
+                            $"{{ \"height\": {normalise(2 * Package[i].Size[2])}, \"length\": {normalise(2 * Package[i].Size[0])},  \"width\": {normalise(2 * Package[i].Size[1])}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }},");
                     }
                     writer.WriteLine($"{{ \"group_id\": \"{Package[Package.Count - 1].Group_id}\", " +
-                            $"\"id\": {fin.Count + Package.Count - 1},  \"mass\": {Package[Package.Count - 1].Mass}, \"position\": {{  \"x\": {Package[Package.Count - 1].Position[0] + Package[Package.Count - 1].Size[0]/2},  \"y\": {Package[Package.Count - 1].Position[2] + Package[Package.Count - 1].Size[2]/2},  \"z\": {Package[Package.Count - 1].Position[1] + Package[Package.Count - 1].Size[1]/2} }}, \"size\":" +
-                            $"{{ \"height\": {Package[Package.Count - 1].Size[2]}, \"length\": {Package[Package.Count - 1].Size[0]},  \"width\": {Package[Package.Count - 1].Size[2]}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }} ] }}");
+                            $"\"id\": {fin.Count + Package.Count - 1},  \"mass\": {Package[Package.Count - 1].Mass}, \"position\": {{  \"x\": {555},  \"y\": {555},  \"z\": {555} }}, \"size\":" +
+                            $"{{ \"height\": {normalise(2 * Package[Package.Count - 1].Size[2])}, \"length\": {normalise(2 * Package[Package.Count - 1].Size[0])},  \"width\": {normalise(2 * Package[Package.Count - 1].Size[2])}  }}, \"sort\": {1}, \"stacking\": true, \"turnover\": true  }} ] }}");
                 }
                 for (int i = 0; i < fin.Count; i++)
                 {
