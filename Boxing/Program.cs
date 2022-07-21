@@ -199,7 +199,7 @@ namespace Boxing
                 Hangar.Hangar.fillbox(Package, fin);
                 
                 string PathOut = Directory.GetCurrentDirectory();
-                PathOut = PathOut.Remove(PathOut.Length - 36, 36);
+                PathOut = PathOut.Remove(PathOut.Length - 31, 31);
                 
                 PathOut = Path.Combine(PathOut, "output");
                 string fileName = "Output" + order + ".json";
