@@ -1,6 +1,6 @@
 # Default_Boxing
 
-Входные файлы кладутся в папку Default_Boxing/Boxing/var/hackathon/group1, выходные файлы появляются в Default_Boxing/Boxing/Default/Output. Программа написана на C#
+Входные файлы кладутся в папку Default_Boxing/Boxing/var/hackathon/group1, выходные файлы появляются в output в корневой папке. Программа написана на C#
 Чтобы запустить программу достаточно запустить файл Default_Boxing\Boxing\Bin\Debug\Boxing.exe.
 
 Программа принимает JSON файл и считывает из него параметры склада и грузов. 
